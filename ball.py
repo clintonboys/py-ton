@@ -3,7 +3,8 @@ Class for an individual ball
 '''
 
 import scipy.stats
-from batsman import Batsman
+from player import *
+import pymc as pm
 
 class Ball(object):
 
@@ -45,9 +46,20 @@ class Ball(object):
     	# batsman_skill_multiplier 
     	# bowler_skill_multiplier
     	# batsman_fatigue_multiplier = decay(innings_age)
+    	return pm.Poisson('a', 0.6).random()
 
     def wickets_taken(self):
+    	return pm.Poisson('b', 0.07).random()
     	# prob of dismissal = Poisson
     	# batsman_skill_multiplier
     	# bowler_skill_multiplier
     	# type of dismissal
+
+    def deliver(self):
+    	if self.wickets_taken() > 0:
+    		self._match._match_score.wicket_taken()
+    		self._match._innings += 1
+    	self._match._match_score.runs_scored(self.runs_scored())
+
+	def __str__(self):
+		return 'Over ' + str(self._over) + '.' + str(self._index)

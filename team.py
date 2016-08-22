@@ -8,4 +8,6 @@ class Team(object):
 	def players(self):
 	    return self._players
 
-
+	@property
+	def bats_first(self):
+	    return self._bats_first

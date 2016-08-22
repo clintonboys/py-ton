@@ -1,8 +1,9 @@
-from ball import Ball
-
 class Player(object):
 
 	def __init__(self, batsman, bowler):
+
+		self._batsman = batsman
+		self._bowler = bowler
 		## a player is just a pair of a batsman and bowler
 
 		## print condition joins
@@ -16,9 +17,9 @@ class Player(object):
 
 class Batsman(object):
 
-	def __init__(self, match, score, is_out, is_on_strike, stats):
+	def __init__(self, match, runs, is_out, is_on_strike, stats):
 		self._match = match
-		self._score = score
+		self._runs = runs
 		self._is_out = is_out
 		self._is_on_strike = is_on_strike
 		self._name = stats["name"]
@@ -29,8 +30,8 @@ class Batsman(object):
 	def match(self):
 	    return self._match
 	
-	def score(self):
-		return self._score
+	def runs(self):
+		return self._runs
 
 	def is_out(self):
 		return self._is_out
@@ -44,4 +45,8 @@ class Batsman(object):
 	def skill_multiplier(self):
 		return self._skill_multiplier
 
-	
+class Bowler(object):
+	def __init__(self, match, over, spell, spell_over, ball, wickets, spell_wickets, runs, spell_runs):
+		self._match = match
+		self._runs = runs
+		self._wickets = wickets

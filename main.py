@@ -24,13 +24,24 @@ from player import *
 from match import Match, MatchScore
 from team import Team
 
+ground = None
+
 match_score = MatchScore()
-match = Match(1, 1, 1, 1, 1, ground, match_score)
-player = Batsman(match, 0, 0, 1, {"name": "Clinton",
+match = Match(0,0,0,0,0, ground, match_score)
+batsman = Batsman(match, 0, 0, 1, {"name": "Clinton",
 								  "handedness": "left",
 								  "skill_multiplier": 1.7})
-team = Team([player, Batsman(), Batsman(),
-			 Batsman(), Batsman(), Batsman(),
-			 Batsman(), Batsman(), Batsman(),
-			 Batsman(), Batsman()], False)
 
+team = Team([batsman, batsman, batsman], False)
+bowler = Bowler(match, 0, 0, 0, 0, 0, 0, 0, 0)
+
+print match_score
+
+for i in range(0,90):
+	print 'Over ' + str(i)
+	print match_score
+	for j in range(0,6):
+		this_ball = Ball(match, match.innings(), i, j, team, bowler, batsman, batsman)
+		this_ball.deliver()
+
+print match_score
