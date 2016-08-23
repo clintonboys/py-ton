@@ -5,6 +5,7 @@ Class for an individual ball
 import scipy.stats
 from player import *
 import pymc as pm
+import math
 
 class Ball(object):
 
@@ -46,10 +47,10 @@ class Ball(object):
     	# batsman_skill_multiplier 
     	# bowler_skill_multiplier
     	# batsman_fatigue_multiplier = decay(innings_age)
-    	return pm.Poisson('a', 0.6).random()
+    	return int(math.ceil(pm.Poisson('a', 2.5).random()*self._batsman_on_strike._skill_multiplier))
 
     def wickets_taken(self):
-    	return pm.Poisson('b', 0.07).random()
+    	return pm.Poisson('b', 1.2).random()*self._bowler._skill_multiplier
     	# prob of dismissal = Poisson
     	# batsman_skill_multiplier
     	# bowler_skill_multiplier

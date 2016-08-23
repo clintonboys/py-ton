@@ -24,7 +24,7 @@ class Batsman(object):
 		self._is_on_strike = is_on_strike
 		self._name = stats["name"]
 		self._handededness = stats["handedness"]
-		self._skill_multiplier = stats["skill_multiplier"]
+		self._skill_multiplier = stats["skill_multiplier"]		
 
 	@property
 	def match(self):
@@ -50,3 +50,4 @@ class Bowler(object):
 		self._match = match
 		self._runs = runs
 		self._wickets = wickets
+		self._skill_multiplier = 1
