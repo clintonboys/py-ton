@@ -1,9 +1,9 @@
 from player import *
-
+from tabulate import tabulate
 
 class Match(object):
 
-	def __init__(self, day, session, session_over, innings, innings_over, ground, match_score):
+	def __init__(self, day, session, session_over, innings, innings_over, ground, match_score, teamA, teamB):
 		self._day = day
 		self._session = session
 		self._session_over = session_over
@@ -11,6 +11,8 @@ class Match(object):
 		self._innings_over = innings_over
 		self._ground = ground
 		self._match_score = match_score
+		self._teamA = teamA
+		self._teamB = teamB
 
 	@property
 	def day(self):
@@ -56,13 +58,8 @@ class MatchScore(object):
 		# 	self._scorecard.append([0,0])
 		# 	self._declared.append(False)
 		# 	self._is_follow_on.append(False)
-		print wickets
 		if wickets < 10:
 			self._scorecard[-1][0] += 1
-		elif wickets == 10:
-			self._scorecard.append([0,0])
-			self._declared.append(False)
-			self._is_follow_on.append(False)
 
 	def declare(self):
 		self._declared[-1] = True
@@ -83,6 +80,9 @@ class MatchScore(object):
 		if match._day == 5 and match._session == 3 and match._session_over == 31:
 			return 'Match drawn.'
 
+		elif self._innings_number == 3 and self._scorecard[2][0] == 0 and self._scorecard[2][1] == 0 and (self._scorecard[0][1] + self._scorecard[2][1]) < self._scorecard[1][1]:
+			return 'Eng won by an innings and ' + str(self._scorecard[1][1] - self._scorecard[2][1] - self._scorecard[0][1]) + ' runs.'
+
 		elif self._innings_number >= 4:
 
 			first_team_total = self._scorecard[0][1] + self._scorecard[2][1]
@@ -93,7 +93,7 @@ class MatchScore(object):
 				# team batting first wins
 				if first_team_total > second_team_total:
 					self._is_over = True
-					return 'A won by ' + str(first_team_total - second_team_total) + ' runs.'
+					return 'Aus won by ' + str(first_team_total - second_team_total) + ' runs.'
 
 				elif first_team_total == second_team_total: 
 					self._is_over = True
@@ -103,22 +103,23 @@ class MatchScore(object):
 
 				if second_team_total > first_team_total:
 					self._is_over = True
-					return 'B won by ' + str(10 - self._scorecard[3][0]) + ' wickets.'
+					return 'Eng won by ' + str(10 - self._scorecard[3][0]) + ' wickets.'
 
 
-	def __str__(self, full = False, match = None):
+	def print_score(self, full = False, match = None):
+		current_scorecard = self._scorecard
+		innings_number = len(current_scorecard)
+		declared_add_list = []
+		for i in range(0,innings_number):
+			try:
+				if self._declared[i]:
+					declared_add_list.append(' (d)')
+				else:
+					declared_add_list.append('')
+			except:
+				declared_add_list = ''*innings_number
+
 		if not full:
-			current_scorecard = self._scorecard
-			innings_number = len(current_scorecard)
-			declared_add_list = []
-			for i in range(0,innings_number):
-				try:
-					if self._declared[i]:
-						declared_add_list.append(' (d)')
-					else:
-						declared_add_list.append('')
-				except:
-					declared_add_list = ''*innings_number
 			is_ten_one = ''
 			is_ten_two = ''
 			is_ten_three = ''
@@ -139,29 +140,73 @@ class MatchScore(object):
 
 
 			if innings_number == 1:
-				return '|| A: ' + is_ten_one + str(current_scorecard[0][1]) + declared_add_list[0]
+				return '|| Aus: ' + is_ten_one + str(current_scorecard[0][1]) + declared_add_list[0]
 			elif innings_number == 2:
-				return '|| A: ' + is_ten_one + str(current_scorecard[0][1]) + declared_add_list[0] \
-			  + '\n' + '|| B: ' + is_ten_two + str(current_scorecard[1][1]) # + declared_add_list[1]
+				return '|| Aus: ' + is_ten_one + str(current_scorecard[0][1]) + declared_add_list[0] \
+			  + '\n' + '|| Eng: ' + is_ten_two + str(current_scorecard[1][1]) # + declared_add_list[1]
 			elif innings_number == 3:
 				if self._is_follow_on[2] == True:
-					return '|| A: ' + is_ten_one + str(current_scorecard[0][1]) + declared_add_list[0] \
-			      + '\n' + '|| B: ' + is_ten_two + str(current_scorecard[1][1]) + ' & ' + \
+					return '|| Aus: ' + is_ten_one + str(current_scorecard[0][1]) + declared_add_list[0] \
+			      + '\n' + '|| Eng: ' + is_ten_two + str(current_scorecard[1][1]) + ' & ' + \
 			      				      is_ten_three + str(current_scorecard[2][1]) + declared_add_list[2] + ' (f.o.)'
 				else:
-					return '|| A: ' + is_ten_one + str(current_scorecard[0][1]) + declared_add_list[0] + ' & ' \
+					return '|| Aus: ' + is_ten_one + str(current_scorecard[0][1]) + declared_add_list[0] + ' & ' \
 					                + is_ten_three + str(current_scorecard[2][1]) + declared_add_list[2] +  '\n' + \
-					       '|| B: ' + is_ten_two + str(current_scorecard[1][1]) + declared_add_list[1]
+					       '|| Eng: ' + is_ten_two + str(current_scorecard[1][1]) + declared_add_list[1]
 			else:
-				return '|| A: ' + is_ten_one + str(current_scorecard[0][1]) + declared_add_list[0] + ' & ' \
+				return '|| Aus: ' + is_ten_one + str(current_scorecard[0][1]) + declared_add_list[0] + ' & ' \
 							    + is_ten_three + str(current_scorecard[2][1]) + declared_add_list[2] +  '\n' + \
-				       '|| B: ' + is_ten_two + str(current_scorecard[1][1]) + declared_add_list[1] + ' & ' \
+				       '|| Eng: ' + is_ten_two + str(current_scorecard[1][1]) + declared_add_list[1] + ' & ' \
 				       	 		+ is_ten_four + str(current_scorecard[3][1]) + declared_add_list[3]
 
 		else:
 			if match:
-				print '_A_(1st_inn._)_|_'
-					       	 		
+				table = []
+				if innings_number > 0:
+					total_first = sum([match._teamA._players[i]._runs[0] for i in range(0, self._scorecard[0][0])])
+					table.append(['Aus (1st inn.)', total_first])
+					table.append(['--------------','----'])
+					for i in range(0, self._scorecard[0][0]):
+						table.append([match._teamA._players[i]._name, match._teamA._players[i]._runs[0]])
+				if innings_number > 1:
+					total_second = sum([match._teamA._players[i]._runs[1] for i in range(0, self._scorecard[1][0])])
+					table[0].append('Eng (1st inn.)')
+					table[0].append(total_second)
+					table[1].append('--------------')
+					table[1].append('----')
+					for j in range(0, self._scorecard[1][0]):
+						try:
+							table[j+1].append(match._teamB._players[j]._name)
+							table[j+1].append(match._teamB._players[j]._runs[1])
+						except:
+							table.append([match._teamB._players[j]._name])
+				if innings_number > 2:
+					total_third = sum([match._teamA._players[i]._runs[2] for i in range(0, self._scorecard[2][0])])					
+					table[0].append('Aus (2nd inn.)')
+					table[0].append(total_third)
+					table[1].append('--------------')
+					table[1].append('----')					
+					for j in range(0, self._scorecard[1][0]):
+						try:
+							table[j+1].append(match._teamA._players[j]._name)
+							table[j+1].append(match._teamA._players[j]._runs[2])
+						except:
+							table.append([match._teamA._players[j]._name])
+				if innings_number > 3:
+					total_fourth = sum([match._teamA._players[i]._runs[3] for i in range(0, self._scorecard[3][0])])										
+					table[0].append('Eng (2nd inn.)')
+					table[0].append(total_fourth)
+					table[1].append('--------------')
+					table[1].append('----')					
+					for j in range(0, self._scorecard[1][0]):
+						try:
+							table[j+1].append(match._teamB._players[j]._name)
+							table[j+1].append(match._teamB._players[j]._runs[3])
+						except:
+							table.append([match._teamB._players[j]._name])
+
+				print 'Full scorecard.'
+				return tabulate(table)					       	 		
 
 
 

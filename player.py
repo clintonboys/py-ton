@@ -17,8 +17,7 @@ class Player(object):
 
 class Batsman(object):
 
-	def __init__(self, match, runs, is_out, is_on_strike, stats):
-		self._match = match
+	def __init__(self, runs, is_out, is_on_strike, stats):
 		self._runs = runs
 		self._is_out = is_out
 		self._is_on_strike = is_on_strike
@@ -27,8 +26,6 @@ class Batsman(object):
 		self._skill_multiplier = stats["skill_multiplier"]		
 
 	@property
-	def match(self):
-	    return self._match
 	
 	def runs(self):
 		return self._runs
