@@ -6,6 +6,7 @@ import scipy.stats
 from player import *
 import pymc as pm
 import math
+import random
 
 class Ball(object):
 
@@ -24,9 +25,28 @@ class Ball(object):
     	# batsman_skill_multiplier
     	# bowler_skill_multiplier
     	# type of dismissal
-        wickets = pm.Poisson('b', 1.2).random()*self._bowler._skill_multiplier
+        wickets = pm.Poisson('b', 0.2).random()*self._bowler._skill_multiplier
         if wickets > 1:
     		self._wickets_taken = 1
+    		determine_type = random.random()
+    		if determine_type >= 0.0 and determine_type <= 0.4065:
+    			catcher = random.choice([player.batsman() for player in self._match._teams[(self._match._teams.index(team)+1)%2]._players])
+    			self._method_of_dismissal = 'c. ' + catcher._name + ' b. ' + bowler._name
+    		elif determine_type <= (0.4065 + 0.1627):
+    			keeper = [player.batsman() for player in self._match._teams[(self._match._teams.index(team)+1)%2]._players if player.batsman()._handedness == 'keeper'][0]
+    			self._method_of_dismissal = 'c. ' + keeper._name + ' b. ' + bowler._name
+    		elif determine_type <= (0.4065 + 0.1267 + 0.2143):
+    			self._method_of_dismissal = 'b. ' + bowler._name
+    		elif determine_type <= (0.4065 + 0.1267 + 0.2143 + 0.1430):
+    			self._method_of_dismissal = 'lbw (b. ' + bowler._name + ')'
+    		elif determine_type <= (0.4065 + 0.1267 + 0.2143 + 0.1430 + 0.0351):
+    			fielder = random.choice([player.batsman() for player in self._match._teams[(self._match._teams.index(team)+1)%2]._players])
+    			self._method_of_dismissal = 'run out (' + fielder._name + ')'
+    		elif determine_type <= (0.4065 + 0.1267 + 0.2143 + 0.1430 + 0.0351 + 0.0203):
+    			keeper = [player.batsman() for player in self._match._teams[(self._match._teams.index(team)+1)%2]._players if player.batsman()._handedness == 'keeper'][0]
+    			self._method_of_dismissal = 'st. ' + keeper._name + ' (b. ' + bowler._name + ')'
+    		else:
+    			self._method_of_dismissal = 'hit wicket'
     	else:
     		self._wickets_taken = 0
 
@@ -69,9 +89,11 @@ class Ball(object):
     	return self._wickets_taken
 
     def deliver(self):
+    	self._batsman_on_strike._deliveries[self._innings-1] += 1
+    	self._bowler._over[self._innings-1] += 1.0/6.0
     	if self.wickets_taken() > 0:
     		self._match._match_score.wicket_taken()
-    		self._match._innings += 1
+    		self._bowler._wickets[self._innings-1] += 1
     	else:
 	    	self._match._match_score.runs_scored(self._runs_scored)
 	    	self._batsman_on_strike._runs[self._innings-1] += self._runs_scored

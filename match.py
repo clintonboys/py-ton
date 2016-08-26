@@ -3,7 +3,7 @@ from tabulate import tabulate
 
 class Match(object):
 
-	def __init__(self, day, session, session_over, innings, innings_over, ground, match_score, teamA, teamB):
+	def __init__(self, day, session, session_over, innings, innings_over, ground, match_score, teams):
 		self._day = day
 		self._session = session
 		self._session_over = session_over
@@ -11,8 +11,7 @@ class Match(object):
 		self._innings_over = innings_over
 		self._ground = ground
 		self._match_score = match_score
-		self._teamA = teamA
-		self._teamB = teamB
+		self._teams = teams
 
 	@property
 	def day(self):
@@ -109,6 +108,7 @@ class MatchScore(object):
 	def print_score(self, full = False, match = None):
 		current_scorecard = self._scorecard
 		innings_number = len(current_scorecard)
+		print innings_number
 		declared_add_list = []
 		for i in range(0,innings_number):
 			try:
@@ -163,47 +163,56 @@ class MatchScore(object):
 			if match:
 				table = []
 				if innings_number > 0:
-					total_first = sum([match._teamA._players[i]._runs[0] for i in range(0, self._scorecard[0][0])])
-					table.append(['Aus (1st inn.)', total_first])
-					table.append(['--------------','----'])
-					for i in range(0, self._scorecard[0][0]):
-						table.append([match._teamA._players[i]._name, match._teamA._players[i]._runs[0]])
+					total_first = sum([match._teams[0]._players[i].batsman()._runs[0] for i in range(0, self._scorecard[0][0])])
+					table.append(['Aus (1st inn.)', '', total_first])
+					table.append(['--------------','--------------','----'])
+					for i in range(0, self._scorecard[0][0] + 1):
+						table.append([match._teams[0]._players[i].batsman()._name, match._teams[0]._players[i].batsman()._how_out[0],match._teams[0]._players[i].batsman()._runs[0]])
 				if innings_number > 1:
-					total_second = sum([match._teamA._players[i]._runs[1] for i in range(0, self._scorecard[1][0])])
+					total_second = sum([match._teams[1]._players[i].batsman()._runs[1] for i in range(0, self._scorecard[1][0])])
 					table[0].append('Eng (1st inn.)')
+					table[0].append('')
 					table[0].append(total_second)
 					table[1].append('--------------')
+					table[1].append('--------------')
 					table[1].append('----')
-					for j in range(0, self._scorecard[1][0]):
+					for j in range(0, self._scorecard[1][0] + 1):
 						try:
-							table[j+1].append(match._teamB._players[j]._name)
-							table[j+1].append(match._teamB._players[j]._runs[1])
+							table[j+2].append(match._teams[1]._players[j].batsman()._name)
+							table[j+2].append(match._teams[1]._players[j].batsman()._how_out[1])
+							table[j+2].append(match._teams[1]._players[j].batsman()._runs[1])
 						except:
-							table.append([match._teamB._players[j]._name])
+							table.append([match._teams[1]._players[j].batsman()._name])
 				if innings_number > 2:
-					total_third = sum([match._teamA._players[i]._runs[2] for i in range(0, self._scorecard[2][0])])					
+					total_third = sum([match._teams[0]._players[i].batsman()._runs[2] for i in range(0, self._scorecard[2][0])])					
 					table[0].append('Aus (2nd inn.)')
+					table[0].append('')
 					table[0].append(total_third)
 					table[1].append('--------------')
-					table[1].append('----')					
-					for j in range(0, self._scorecard[1][0]):
-						try:
-							table[j+1].append(match._teamA._players[j]._name)
-							table[j+1].append(match._teamA._players[j]._runs[2])
-						except:
-							table.append([match._teamA._players[j]._name])
-				if innings_number > 3:
-					total_fourth = sum([match._teamA._players[i]._runs[3] for i in range(0, self._scorecard[3][0])])										
-					table[0].append('Eng (2nd inn.)')
-					table[0].append(total_fourth)
 					table[1].append('--------------')
 					table[1].append('----')					
-					for j in range(0, self._scorecard[1][0]):
+					for j in range(0, self._scorecard[1][0] + 1):
 						try:
-							table[j+1].append(match._teamB._players[j]._name)
-							table[j+1].append(match._teamB._players[j]._runs[3])
+							table[j+2].append(match._teams[0]._players[j].batsman()._name)
+							table[j+2].append(match._teams[0]._players[j].batsman()._how_out[2])
+							table[j+2].append(match._teams[0]._players[j].batsman()._runs[2])
 						except:
-							table.append([match._teamB._players[j]._name])
+							table.append([match._teams[0]._players[j].batsman()._name])
+				if innings_number > 3:
+					total_fourth = sum([match._teams[1]._players[i].batsman()._runs[3] for i in range(0, self._scorecard[3][0])])										
+					table[0].append('Eng (2nd inn.)')
+					table[0].append('')
+					table[0].append(total_fourth)
+					table[1].append('--------------')
+					table[1].append('--------------')
+					table[1].append('----')					
+					for j in range(0, self._scorecard[1][0] + 1):
+						try:
+							table[j+2].append(match._teams[1]._players[j].batsman()._name)
+							table[j+2].append(match._teams[1]._players[j].batsman()._how_out[3])
+							table[j+2].append(match._teams[1]._players[j].batsman()._runs[3])
+						except:
+							table.append([match._teams[1]._players[j].batsman()._name])
 
 				print 'Full scorecard.'
 				return tabulate(table)					       	 		
