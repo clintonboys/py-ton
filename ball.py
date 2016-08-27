@@ -21,11 +21,7 @@ class Ball(object):
         self._batsman_on_strike = batsman_on_strike
         self._batsman_off_strike = batsman_off_strike
     	
-    	# prob of dismissal = Poisson
-    	# batsman_skill_multiplier
-    	# bowler_skill_multiplier
-    	# type of dismissal
-        wickets = pm.Poisson('b', 0.2).random()*self._bowler._skill_multiplier
+        wickets = pm.Poisson('b', 0.15).random()*self._bowler._skill_multiplier
         if wickets > 1:
     		self._wickets_taken = 1
     		determine_type = random.random()
@@ -57,7 +53,7 @@ class Ball(object):
     	if self._wickets_taken > 0:
     		self._runs_scored = 0
     	else:
-    		self._runs_scored = int(math.ceil(pm.Poisson('a', 2.5).random()*self._batsman_on_strike._skill_multiplier))
+    		self._runs_scored = int(math.ceil(pm.Poisson('a', 2.2).random()*self._batsman_on_strike._skill_multiplier))
 
         
     @property
@@ -97,6 +93,7 @@ class Ball(object):
     	else:
 	    	self._match._match_score.runs_scored(self._runs_scored)
 	    	self._batsman_on_strike._runs[self._innings-1] += self._runs_scored
+	    	self._bowler._runs[self._innings -1] += self._runs_scored
 
 	def __str__(self):
 		return 'Over ' + str(self._over) + '.' + str(self._index)

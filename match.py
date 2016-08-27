@@ -1,5 +1,6 @@
 from player import *
 from tabulate import tabulate
+import numpy as np
 
 class Match(object):
 
@@ -161,61 +162,121 @@ class MatchScore(object):
 
 		else:
 			if match:
-				table = []
-				if innings_number > 0:
-					total_first = sum([match._teams[0]._players[i].batsman()._runs[0] for i in range(0, self._scorecard[0][0])])
-					table.append(['Aus (1st inn.)', '', total_first])
-					table.append(['--------------','--------------','----'])
-					for i in range(0, self._scorecard[0][0] + 1):
-						table.append([match._teams[0]._players[i].batsman()._name, match._teams[0]._players[i].batsman()._how_out[0],match._teams[0]._players[i].batsman()._runs[0]])
-				if innings_number > 1:
-					total_second = sum([match._teams[1]._players[i].batsman()._runs[1] for i in range(0, self._scorecard[1][0])])
-					table[0].append('Eng (1st inn.)')
-					table[0].append('')
-					table[0].append(total_second)
-					table[1].append('--------------')
-					table[1].append('--------------')
-					table[1].append('----')
-					for j in range(0, self._scorecard[1][0] + 1):
-						try:
-							table[j+2].append(match._teams[1]._players[j].batsman()._name)
-							table[j+2].append(match._teams[1]._players[j].batsman()._how_out[1])
-							table[j+2].append(match._teams[1]._players[j].batsman()._runs[1])
-						except:
-							table.append([match._teams[1]._players[j].batsman()._name])
-				if innings_number > 2:
-					total_third = sum([match._teams[0]._players[i].batsman()._runs[2] for i in range(0, self._scorecard[2][0])])					
-					table[0].append('Aus (2nd inn.)')
-					table[0].append('')
-					table[0].append(total_third)
-					table[1].append('--------------')
-					table[1].append('--------------')
-					table[1].append('----')					
-					for j in range(0, self._scorecard[1][0] + 1):
-						try:
-							table[j+2].append(match._teams[0]._players[j].batsman()._name)
-							table[j+2].append(match._teams[0]._players[j].batsman()._how_out[2])
-							table[j+2].append(match._teams[0]._players[j].batsman()._runs[2])
-						except:
-							table.append([match._teams[0]._players[j].batsman()._name])
-				if innings_number > 3:
-					total_fourth = sum([match._teams[1]._players[i].batsman()._runs[3] for i in range(0, self._scorecard[3][0])])										
-					table[0].append('Eng (2nd inn.)')
-					table[0].append('')
-					table[0].append(total_fourth)
-					table[1].append('--------------')
-					table[1].append('--------------')
-					table[1].append('----')					
-					for j in range(0, self._scorecard[1][0] + 1):
-						try:
-							table[j+2].append(match._teams[1]._players[j].batsman()._name)
-							table[j+2].append(match._teams[1]._players[j].batsman()._how_out[3])
-							table[j+2].append(match._teams[1]._players[j].batsman()._runs[3])
-						except:
-							table.append([match._teams[1]._players[j].batsman()._name])
 
-				print 'Full scorecard.'
-				return tabulate(table)					       	 		
+				## Batting stats
+
+				batting_stats_table = []
+				if innings_number > 0:
+					if self._scorecard[0][0] == 10:
+						total_first = sum([match._teams[0]._players[i].batsman()._runs[0] for i in range(0, self._scorecard[0][0] +1)])
+					else:
+						total_first = str(self._scorecard[0][0])+'/'+str(sum([match._teams[0]._players[i].batsman()._runs[0] for i in range(0, self._scorecard[0][0] +1)]))+' (d)'
+					batting_stats_table.append(['Aus (1st inn.)', total_first             , '','' ,''  ,''])
+					batting_stats_table.append(['--------------','--------------','R'         ,'B','4s','6s'])
+					for i in range(0, self._scorecard[0][0] + 1):
+						batting_stats_table.append([match._teams[0]._players[i].batsman()._name, match._teams[0]._players[i].batsman()._how_out[0],match._teams[0]._players[i].batsman()._runs[0],match._teams[0]._players[i].batsman()._deliveries[0],match._teams[0]._players[i].batsman()._fours[0],match._teams[0]._players[i].batsman()._sixes[0] ])
+				if innings_number > 1:
+					if self._scorecard[1][0] == 10:
+						total_second = sum([match._teams[1]._players[i].batsman()._runs[1] for i in range(0, self._scorecard[1][0] +1)])
+					else:
+						total_second = str(self._scorecard[1][0])+'/'+str(sum([match._teams[1]._players[i].batsman()._runs[1] for i in range(0, self._scorecard[1][0] +1)]))+' (d)'
+					batting_stats_table[0]+= ['Eng (1st inn.)',total_second,'','','','']
+					batting_stats_table[1] += ['--------------','--------------','R','B','4s','6s']
+					for j in range(0, self._scorecard[1][0] + 1):
+						try:
+							batting_stats_table[j+2].append(match._teams[1]._players[j].batsman()._name)
+							batting_stats_table[j+2].append(match._teams[1]._players[j].batsman()._how_out[1])
+							batting_stats_table[j+2].append(match._teams[1]._players[j].batsman()._runs[1])
+							batting_stats_table[j+2].append(match._teams[1]._players[j].batsman()._deliveries[1])
+							batting_stats_table[j+2].append(match._teams[1]._players[j].batsman()._fours[1])
+							batting_stats_table[j+2].append(match._teams[1]._players[j].batsman()._sixes[1])							
+						except:
+							batting_stats_table.append([match._teams[1]._players[j].batsman()._name])
+				if innings_number > 2:
+					if self._scorecard[2][0] == 10:
+						total_third = sum([match._teams[0]._players[i].batsman()._runs[2] for i in range(0, self._scorecard[2][0] +1)])					
+					else:
+						total_third = str(self._scorecard[2][0]) +'/' +str(sum([match._teams[0]._players[i].batsman()._runs[2] for i in range(0, self._scorecard[2][0] +1)]))+' (d)'
+					batting_stats_table[0] += ['Aus (2nd inn.)', total_third, '', '','','']
+					batting_stats_table[1] += ['--------------','--------------','R','B','4s','6s']
+					for j in range(0, self._scorecard[1][0] + 1):
+						try:
+							batting_stats_table[j+2].append(match._teams[0]._players[j].batsman()._name)
+							batting_stats_table[j+2].append(match._teams[0]._players[j].batsman()._how_out[2])
+							batting_stats_table[j+2].append(match._teams[0]._players[j].batsman()._runs[2])
+							batting_stats_table[j+2].append(match._teams[0]._players[j].batsman()._deliveries[2])
+							batting_stats_table[j+2].append(match._teams[0]._players[j].batsman()._fours[2])
+							batting_stats_table[j+2].append(match._teams[0]._players[j].batsman()._sixes[2])							
+						except:
+							batting_stats_table.append([match._teams[0]._players[j].batsman()._name])
+				if innings_number > 3:
+					if self._scorecard[3][0] == 10:
+						total_fourth = sum([match._teams[1]._players[i].batsman()._runs[3] for i in range(0, self._scorecard[3][0] +1)])										
+					else:
+						total_fourth = str(self._scorecard[3][0])+'/'+str(sum([match._teams[1]._players[i].batsman()._runs[3] for i in range(0, self._scorecard[3][0] +1)]))
+					batting_stats_table[0] += ['Eng (2nd inn.)',total_fourth,'','','','']
+					batting_stats_table[1] += ['--------------','--------------','R','B','4s','6s']
+					for j in range(0, self._scorecard[1][0] + 1):
+						try:
+							batting_stats_table[j+2].append(match._teams[1]._players[j].batsman()._name)
+							batting_stats_table[j+2].append(match._teams[1]._players[j].batsman()._how_out[3])
+							batting_stats_table[j+2].append(match._teams[1]._players[j].batsman()._runs[3])
+							batting_stats_table[j+2].append(match._teams[1]._players[j].batsman()._deliveries[3])
+							batting_stats_table[j+2].append(match._teams[1]._players[j].batsman()._fours[3])
+							batting_stats_table[j+2].append(match._teams[1]._players[j].batsman()._sixes[3])
+						except:
+							batting_stats_table.append([match._teams[1]._players[j].batsman()._name])
+
+				## Bowling stats
+
+				bowling_stats_table = []
+
+				bowling_stats_table.append(['Eng (1st inn.)', 'O', 'M', 'W', 'R'])
+
+				if innings_number > 0:
+					bowlers = [player.bowler() for player in match._teams[1]._players if player.bowler()._over[0] > 0.0]
+					for i in range(0,11):
+						try:
+							bowling_stats_table.append([bowlers[i]._name, np.round(bowlers[i]._over[0],2), bowlers[i]._maidens[0], bowlers[i]._wickets[0], bowlers[i]._runs[0]])
+						except:
+							pass
+				
+				if innings_number > 1:
+					bowling_stats_table[0] += ['Aus (1st inn.)', 'O', 'M', 'W', 'R']
+					bowlers = [player.bowler() for player in match._teams[0]._players if player.bowler()._over[1] > 0.0]
+					for i in range(0,len(bowlers)):
+						try:
+							bowling_stats_table[i+1] += [bowlers[i]._name, np.round(bowlers[i]._over[1],2), bowlers[i]._maidens[1], bowlers[i]._wickets[1], bowlers[i]._runs[1]]
+						except:
+							bowling_stats_table.append(['','','','','', bowlers[i]._name, np.round(bowlers[i]._over[1],2), bowlers[i]._maidens[1], bowlers[i]._wickets[1], bowlers[i]._runs[1]])
+
+				if innings_number > 2:
+					bowling_stats_table[0] += ['Eng (2nd inn.)', 'O', 'M', 'W', 'R']
+					bowlers = [player.bowler() for player in match._teams[1]._players if player.bowler()._over[2] > 0.0]
+					for i in range(0,len(bowlers)):
+						try:
+							if len(bowling_stats_table[i+1]) == 5:
+								bowling_stats_table[i+1] += ['','','','','', bowlers[i]._name, np.round(bowlers[i]._over[2],2), bowlers[i]._maidens[2], bowlers[i]._wickets[2], bowlers[i]._runs[2]]
+							elif len(bowling_stats_table[i+1]) == 10:
+								bowling_stats_table[i+1] += [bowlers[i]._name, np.round(bowlers[i]._over[2],2), bowlers[i]._maidens[2], bowlers[i]._wickets[2], bowlers[i]._runs[2]]
+						except:
+							bowling_stats_table.append(['','','','','','','','','','', bowlers[i]._name, np.round(bowlers[i]._over[2],2), bowlers[i]._maidens[2], bowlers[i]._wickets[2], bowlers[i]._runs[2]])
+
+				if innings_number > 3:
+					bowling_stats_table[0] += ['Aus (2nd inn.)', 'O', 'M', 'W', 'R']
+					bowlers = [player.bowler() for player in match._teams[0]._players if player.bowler()._over[3] > 0.0]
+					for i in range(0,len(bowlers)):
+						try:
+							if len(bowling_stats_table[i+1]) == 5:
+								bowling_stats_table[i+1] += ['','','','','','','','','','', bowlers[i]._name, np.round(bowlers[i]._over[3],2), bowlers[i]._maidens[3], bowlers[i]._wickets[3], bowlers[i]._runs[3]]
+							elif len(bowling_stats_table[i+1]) == 10:
+								bowling_stats_table[i+1] += ['','','','','',bowlers[i]._name, np.round(bowlers[i]._over[3],2), bowlers[i]._maidens[3], bowlers[i]._wickets[3], bowlers[i]._runs[3]]
+							elif len(bowling_stats_table[i+1]) == 15:
+								bowling_stats_table[i+1] += [bowlers[i]._name, np.round(bowlers[i]._over[3],2), bowlers[i]._maidens[3], bowlers[i]._wickets[3], bowlers[i]._runs[3]]								
+						except:
+							bowling_stats_table.append(['','','','','','','','','','','','','','','', bowlers[i]._name, np.round(bowlers[i]._over[2],2), bowlers[i]._maidens[3], bowlers[i]._wickets[3], bowlers[i]._runs[3]])
+
+				return tabulate(batting_stats_table), tabulate(bowling_stats_table)					       	 		
 
 
 
