@@ -1,0 +1,127 @@
+{ "teamid": 1,
+  "name": "Australia",
+  "short_name": "AUS",
+  "players": [
+    {
+      "name": "DA Warner",
+      "batsman": {
+        "handedness": "left",
+        "skill_multiplier": 2.1
+      },
+      "bowler": {
+        "style": "spin",
+        "skill_multiplier": 0.5
+      }
+    },
+    {
+      "name": "AJ Finch",
+      "batsman": {
+        "handedness": "left",
+        "skill_multiplier": 2.0
+      },
+      "bowler": {
+        "style": "spin",
+        "skill_multiplier": 0.3
+      }
+    },
+    {
+      "name": "SPD Smith",
+      "batsman": {
+        "handedness": "left",
+        "skill_multiplier": 2.6
+      },
+      "bowler": {
+        "style": "spin",
+        "skill_multiplier": 0.6
+      }
+    },
+    {
+      "name": "GJ Bailey",
+      "batsman": {
+        "handedness": "left",
+        "skill_multiplier": 2.0
+      },
+      "bowler": {
+        "style": "spin",
+        "skill_multiplier": 0.2
+      }
+    },
+    {
+      "name": "MS Wade",
+      "batsman": {
+        "handedness": "keeper",
+        "skill_multiplier": 1.9
+      },
+      "bowler": {
+        "style": "spin",
+        "skill_multiplier": 0.1
+      }
+    },
+    {
+      "name": "MC Henriques",
+      "batsman": {
+        "handedness": "left",
+        "skill_multiplier": 2.0
+      },
+      "bowler": {
+        "style": "fast",
+        "skill_multiplier": 1.8
+      }
+    },
+    {
+      "name": "TM Head",
+      "batsman": {
+        "handedness": "left",
+        "skill_multiplier": 1.3
+      },
+      "bowler": {
+        "style": "spin",
+        "skill_multiplier": 1.1
+      }
+    },
+    {
+      "name": "JP Faulkner",
+      "batsman": {
+        "handedness": "left",
+        "skill_multiplier": 1.0
+      },
+      "bowler": {
+        "style": "fast",
+        "skill_multiplier": 1.9
+      }
+    },
+    {
+      "name": "MA Starc",
+      "batsman": {
+        "handedness": "left",
+        "skill_multiplier": 0.8
+      },
+      "bowler": {
+        "style": "fast",
+        "skill_multiplier": 1.8
+      }
+    },
+    {
+      "name": "A Zampa",
+      "batsman": {
+        "handedness": "left",
+        "skill_multiplier": 0.6
+      },
+      "bowler": {
+        "style": "fast",
+        "skill_multiplier": 2.0
+      }
+    },
+    {
+      "name": "NM Lyon",
+      "batsman": {
+        "handedness": "left",
+        "skill_multiplier": 0.3
+      },
+      "bowler": {
+        "style": "spin",
+        "skill_multiplier": 2.1
+      }
+    }
+  ]
+}

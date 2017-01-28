@@ -2,7 +2,8 @@ from operator import attrgetter
 
 class Team(object):
 
-	def __init__(self, name, short_name, players, bats_first):
+	def __init__(self, teamid, name, short_name, players, bats_first):
+		self._id = teamid
 		self._players = players
 		self._bats_first = bats_first
 		self._name = name
